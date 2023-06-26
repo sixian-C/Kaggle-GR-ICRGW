@@ -9,7 +9,7 @@ import model.model as module_arch
 from parse_config import ConfigParser
 from trainer import Trainer
 from utils import prepare_device
-
+import gc
 
 # fix random seeds for reproducibility
 SEED = 123
@@ -19,6 +19,10 @@ torch.backends.cudnn.benchmark = False
 np.random.seed(SEED)
 
 def main(config):
+    
+    gc.collect()
+
+    torch.cuda.empty_cache()
     logger = config.get_logger('train')
 
     # setup data_loader instances

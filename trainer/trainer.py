@@ -41,7 +41,6 @@ class Trainer(BaseTrainer):
         self.train_metrics.reset()
         for batch_idx, (data, target) in enumerate(self.data_loader):
             data, target = data.to(self.device), target.to(self.device)
-
             self.optimizer.zero_grad()
             output = self.model(data)
             loss = self.criterion(output, target)
@@ -85,7 +84,7 @@ class Trainer(BaseTrainer):
             for batch_idx, (data, target) in enumerate(self.valid_data_loader):
                 data, target = data.to(self.device), target.to(self.device)
 
-                output = self.model(data)
+                output = self.model(data.unsqueeze(0))
                 loss = self.criterion(output, target)
 
                 self.writer.set_step((epoch - 1) * len(self.valid_data_loader) + batch_idx, 'valid')

@@ -2,20 +2,14 @@ import torch.nn as nn
 import torch.nn.functional as F
 from base import BaseModel
 import segmentation_models_pytorch as smp
-from typing import Optional, Union, List
-from segmentation_models_pytorch.encoders import get_encoder
-from segmentation_models_pytorch.base import (
-    SegmentationModel,
-    SegmentationHead,
-    ClassificationHead,
-)
+
 
 class Contrails_UNET(smp.Unet):
     def __init__(
         self,
         encoder_name: str = "timm-resnest26d",
         encoder_depth: int = 5,
-        encoder_weights: Optional[str] = "imagenet",
+        encoder_weights: str = "imagenet",
         in_channels: int = 3,
         classes: int = 1,
         activation: str = "sigmoid",

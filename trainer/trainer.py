@@ -12,7 +12,7 @@ class Trainer(BaseTrainer):
     def __init__(self, model, criterion, metric_ftns, optimizer, config, device,
                  data_loader, valid_data_loader=None, lr_scheduler=None, len_epoch=None):
         super().__init__(model, criterion, metric_ftns, optimizer, config)
-        summary(model, (3, 256, 256))
+        summary(model, (3, 384, 384))
         self.config = config
         self.device = device
         self.data_loader = data_loader
@@ -44,6 +44,9 @@ class Trainer(BaseTrainer):
             data, target = data.to(self.device), target.to(self.device)
             self.optimizer.zero_grad()
             output = self.model(data)
+            if self.config["image_size"] != 256:
+                output = torch.nn.functional.interpolate(output, 
+                size=256, mode='bilinear')
             loss = self.criterion(output, target)
             loss.backward()
             self.optimizer.step()
@@ -51,7 +54,7 @@ class Trainer(BaseTrainer):
             self.writer.set_step((epoch - 1) * self.len_epoch + batch_idx)
             self.train_metrics.update('loss', loss.item())
             for met in self.metric_ftns:
-                self.train_metrics.update(met.__name__, met(output, target))
+                self.train_metrics.update(met.__name__, met(output, target.long()))
 
             if batch_idx % self.log_step == 0:
                 self.logger.debug('Train Epoch: {} {} Loss: {:.6f}'.format(
@@ -86,12 +89,15 @@ class Trainer(BaseTrainer):
                 data, target = data.to(self.device), target.to(self.device)
 
                 output = self.model(data.unsqueeze(0))
-                loss = self.criterion(output, target)
+                if self.config["image_size"] != 256:
+                    output = torch.nn.functional.interpolate(output, 
+                    size=256, mode='bilinear')
+                loss = self.criterion(output, target.unsqueeze(0))
 
                 self.writer.set_step((epoch - 1) * len(self.valid_data_loader) + batch_idx, 'valid')
                 self.valid_metrics.update('loss', loss.item())
                 for met in self.metric_ftns:
-                    self.valid_metrics.update(met.__name__, met(output, target))
+                    self.valid_metrics.update(met.__name__, met(output, target.long()))
                 self.writer.add_image('input', make_grid(data.cpu(), nrow=8, normalize=True))
 
         # add histogram of model parameters to the tensorboard

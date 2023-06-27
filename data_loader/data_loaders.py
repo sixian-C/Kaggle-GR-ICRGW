@@ -42,11 +42,12 @@ class ContrailsDataset(torch.utils.data.Dataset):
     """
     Google Research contrils dataset 
     """
-    def __init__(self, df, image_size=256, train=True):
+    def __init__(self, df, image_size=384, train=True):
 
         self.df = df
         self.trn = train
-        self.normalize_image = transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
+        self.normalize_image = transforms.Normalize((0.485, 0.456, 0.406), 
+        (0.229, 0.224, 0.225))
         self.image_size = image_size
         if image_size != 256:
             self.resize_image = transforms.transforms.Resize(image_size)
@@ -84,7 +85,7 @@ class ContrailsDataLoader(BaseDataLoader):
         train_path = os.path.join(path, "train_df.csv")
         train_df = pd.read_csv(train_path)
         train_df["path"] = contrails + train_df["record_id"].astype(str) + ".npy"
-        self.dataset = Subset(ContrailsDataset(train_df, 256, train=True),np.arange(1,5001))
+        self.dataset = Subset(ContrailsDataset(train_df, 384, train=True),np.arange(1,101))
         super().__init__(self.dataset, batch_size, shuffle, validation_split, num_workers)
 
     def split_validation(self):
@@ -93,8 +94,5 @@ class ContrailsDataLoader(BaseDataLoader):
         valid_path = os.path.join(path, "valid_df.csv")
         valid_df = pd.read_csv(valid_path)
         valid_df["path"] = contrails + valid_df["record_id"].astype(str) + ".npy"
-        if self.valid_sampler is None:
-            return None
-        else:
-            return Subset(ContrailsDataset(valid_df, 256, train=False),np.arange(1,5001))
-            #return ContrailsDataset(valid_df, 256, train=False)
+        return Subset(ContrailsDataset(valid_df, 384, train=False),np.arange(1,101))
+        #return ContrailsDataset(valid_df, 256, train=False)

@@ -15,7 +15,7 @@ import segmentation_models_pytorch as smp
 
 class Contrails_UNET(BaseModel):
     def __init__(self):
-        super(Contrails_UNET, self).__init__()
+        super().__init__()
         
         self.model = smp.Unet(
             encoder_name="timm-resnest26d", 
@@ -23,10 +23,10 @@ class Contrails_UNET(BaseModel):
             decoder_use_batchnorm=True,
             classes=1, 
             in_channels = 3,
-            activation="sigmoid"
+            activation=None
         )
-        
-        self.loss_module = smp.losses.DiceLoss(mode='binary')
+        self.loss_module = smp.losses.DiceLoss(mode="binary", smooth=1.0)
+        #self.loss_module = smp.losses.DiceLoss(mode='binary')
     
     def forward(self, imgs):
         preds = self.model(imgs)

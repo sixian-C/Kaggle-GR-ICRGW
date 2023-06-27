@@ -3,7 +3,7 @@ import torch
 from torchvision.utils import make_grid
 from base import BaseTrainer
 from utils import inf_loop, MetricTracker
-
+from torchsummary import summary
 
 class Trainer(BaseTrainer):
     """
@@ -12,6 +12,7 @@ class Trainer(BaseTrainer):
     def __init__(self, model, criterion, metric_ftns, optimizer, config, device,
                  data_loader, valid_data_loader=None, lr_scheduler=None, len_epoch=None):
         super().__init__(model, criterion, metric_ftns, optimizer, config)
+        summary(model, (3, 256, 256))
         self.config = config
         self.device = device
         self.data_loader = data_loader

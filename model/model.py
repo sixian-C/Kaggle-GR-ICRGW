@@ -4,20 +4,34 @@ from base import BaseModel
 import segmentation_models_pytorch as smp
 
 
-class Contrails_UNET(smp.Unet):
-    def __init__(
-        self,
-        encoder_name: str = "timm-resnest26d",
-        encoder_depth: int = 5,
-        encoder_weights: str = "imagenet",
-        in_channels: int = 3,
-        classes: int = 1,
-        activation: str = "sigmoid",
-    ):
-        super().__init__()
+# class Contrails_UNET(smp.Unet):
+#     def __init__(self):
+#         super(smp.Unet).__init__()
+#         self.encoder_name = "timm-resnest26d",
+#         self.encoder_weights = "imagenet",
+#         self.in_channels = 3,
+#         self.classes = 1,
+#         self.activation = "sigmoid"
 
-        self.name = "u-{}".format(encoder_name)
-        self.initialize()
+class Contrails_UNET(BaseModel):
+    def __init__(self):
+        super(Contrails_UNET, self).__init__()
+        
+        self.model = smp.Unet(
+            encoder_name="timm-resnest26d", 
+            encoder_weights="imagenet", 
+            decoder_use_batchnorm=True,
+            classes=1, 
+            in_channels = 3,
+            activation="sigmoid"
+        )
+        
+        self.loss_module = smp.losses.DiceLoss(mode='binary')
+    
+    def forward(self, imgs):
+        preds = self.model(imgs)
+        return preds
+        #return {"loss": loss, "logits": logits.sigmoid(), "logits_raw": logits, "target": y}
 
 class MnistModel(BaseModel):
     def __init__(self, num_classes=10):

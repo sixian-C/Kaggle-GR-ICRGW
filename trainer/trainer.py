@@ -87,16 +87,16 @@ class Trainer(BaseTrainer):
         with torch.no_grad():
             for batch_idx, (data, target) in enumerate(self.valid_data_loader):
                 data, target = data.to(self.device), target.to(self.device)
-                output = self.model(data.unsqueeze(0))
+                output = self.model(data)
                 if self.config["image_size"] != 256:
                     output = torch.nn.functional.interpolate(output, 
                     size=256, mode='bilinear')
-                loss = self.criterion(output, target.unsqueeze(0))
+                loss = self.criterion(output, target)
 
                 self.writer.set_step((epoch - 1) * len(self.valid_data_loader) + batch_idx, 'valid')
                 self.valid_metrics.update('loss', loss.item())
                 for met in self.metric_ftns:
-                    self.valid_metrics.update(met.__name__, met(torch.sigmoid(output), target.unsqueeze(0).long()))
+                    self.valid_metrics.update(met.__name__, met(torch.sigmoid(output), target.long()))
                 self.writer.add_image('input', make_grid(data.cpu(), nrow=8, normalize=True))
 
         # add histogram of model parameters to the tensorboard

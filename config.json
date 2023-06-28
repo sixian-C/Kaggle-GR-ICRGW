@@ -1,18 +1,28 @@
 {
   "name": "Contrails_UNET",
   "n_gpu": 1,
-  "image_size":384,
+  "image_size": 384,
   "arch": {
     "type": "Contrails_UNET",
     "args": {}
   },
-  "data_loader": {
-    "type": "ContrailsDataLoader",
+  "train_data_loader": {
+    "type": "ContrailsTrainDataLoader",
     "args": {
       "data_dir": "data/",
       "batch_size": 8,
       "shuffle": true,
-      "validation_split": 0.1,
+      "validation_split": 0,
+      "num_workers": 2
+    }
+  },
+  "validation_data_loader": {
+    "type": "ContrailsValidationDataLoader",
+    "args": {
+      "data_dir": "data/",
+      "batch_size": 8,
+      "shuffle": false,
+      "validation_split": 0,
       "num_workers": 2
     }
   },

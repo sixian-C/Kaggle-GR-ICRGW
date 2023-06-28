@@ -74,7 +74,7 @@ class ContrailsDataset(torch.utils.data.Dataset):
     def __len__(self): 
         return len(self.df)
 
-class ContrailsDataLoader(BaseDataLoader):
+class ContrailsTrainDataLoader(BaseDataLoader):
     """
     Google Research Contrils data loading using BaseDataLoader
     """ 
@@ -85,15 +85,30 @@ class ContrailsDataLoader(BaseDataLoader):
         train_path = os.path.join(path, "train_df.csv")
         train_df = pd.read_csv(train_path)
         train_df["path"] = contrails + train_df["record_id"].astype(str) + ".npy"
-        # self.dataset = Subset(ContrailsDataset(train_df, 384, train=True),np.arange(1,101))
-        self.dataset = ContrailsDataset(train_df, 384, train=True)
+        self.dataset = Subset(ContrailsDataset(train_df, 384, train=True),np.arange(1,101))
+        # self.dataset = ContrailsDataset(train_df, 384, train=True)
         super().__init__(self.dataset, batch_size, shuffle, validation_split, num_workers)
 
-    def split_validation(self):
+    # def split_validation(self):
+    #     path = 'data/GR_ICRGW_Dataset/archive'
+    #     contrails = os.path.join(path, "contrails/")
+    #     valid_path = os.path.join(path, "valid_df.csv")
+    #     valid_df = pd.read_csv(valid_path)
+    #     valid_df["path"] = contrails + valid_df["record_id"].astype(str) + ".npy"
+    #     #return Subset(ContrailsDataset(valid_df, 384, train=False),np.arange(1,101))
+    #     return ContrailsDataset(valid_df, 384, train=False)
+
+class ContrailsValidationDataLoader(BaseDataLoader):
+    """
+    Google Research Contrils data loading using BaseDataLoader
+    """ 
+    def __init__(self, data_dir, batch_size, shuffle=True, validation_split=0.0, num_workers=1, training=True):
+
         path = 'data/GR_ICRGW_Dataset/archive'
         contrails = os.path.join(path, "contrails/")
         valid_path = os.path.join(path, "valid_df.csv")
         valid_df = pd.read_csv(valid_path)
         valid_df["path"] = contrails + valid_df["record_id"].astype(str) + ".npy"
-        #return Subset(ContrailsDataset(valid_df, 384, train=False),np.arange(1,101))
-        return ContrailsDataset(valid_df, 256, train=False)
+        self.dataset = Subset(ContrailsDataset(valid_df, 384, train=True),np.arange(1,101))
+        # self.dataset = ContrailsDataset(valid_df, 384, train=False)
+        super().__init__(self.dataset, batch_size, shuffle, validation_split, num_workers)

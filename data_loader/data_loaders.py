@@ -85,8 +85,8 @@ class ContrailsTrainDataLoader(BaseDataLoader):
         train_path = os.path.join(path, "train_df.csv")
         train_df = pd.read_csv(train_path)
         train_df["path"] = contrails + train_df["record_id"].astype(str) + ".npy"
-        self.dataset = Subset(ContrailsDataset(train_df, 384, train=True),np.arange(1,101))
-        # self.dataset = ContrailsDataset(train_df, 384, train=True)
+        # self.dataset = Subset(ContrailsDataset(train_df, 384, train=True),np.arange(1,101))
+        self.dataset = ContrailsDataset(train_df, 384, train=True)
         super().__init__(self.dataset, batch_size, shuffle, validation_split, num_workers)
 
     # def split_validation(self):
@@ -109,6 +109,6 @@ class ContrailsValidationDataLoader(BaseDataLoader):
         valid_path = os.path.join(path, "valid_df.csv")
         valid_df = pd.read_csv(valid_path)
         valid_df["path"] = contrails + valid_df["record_id"].astype(str) + ".npy"
-        self.dataset = Subset(ContrailsDataset(valid_df, 384, train=True),np.arange(1,101))
-        # self.dataset = ContrailsDataset(valid_df, 384, train=False)
+        # self.dataset = Subset(ContrailsDataset(valid_df, 384, train=True),np.arange(1,101))
+        self.dataset = ContrailsDataset(valid_df, 384, train=False)
         super().__init__(self.dataset, batch_size, shuffle, validation_split, num_workers)

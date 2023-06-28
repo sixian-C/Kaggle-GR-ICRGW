@@ -30,14 +30,18 @@ def dice_avg(y_p, y_t,smooth=1e-3):
 def dice_loss_avg(y_p,y_t):
     return 1-dice_avg(y_p,y_t)
 
-def dice_global(y_p,y_t,smooth=1e-3):
+
+def dice_global(input, target):
     with torch.no_grad():
-        intersection = torch.sum(y_p * y_t)
-        union = torch.sum(y_p) + torch.sum(y_t)
+        smooth = 1.
 
-        dice = (2.0 * intersection + smooth) / (union + smooth)
+        iflat = input.view(-1)
+        tflat = target.view(-1)
+        intersection = (iflat * tflat).sum()
+        
+        return ((2. * intersection + smooth) /
+                (iflat.sum() + tflat.sum() + smooth))
 
-        return dice
 
 def dice_loss_global(y_p,y_t):
     return 1-dice_global(y_p,y_t)

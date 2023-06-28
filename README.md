@@ -1,3 +1,8 @@
+# Kaggle GR-ICRGWW Solution
+This is code base for kaggle competition: [Google Research - Identify Contrails to Reduce Global Warming](https://www.kaggle.com/competitions/google-research-identify-contrails-reduce-global-warming/overview)
+
+To sum up, I found this amazing [pytorch template](https://github.com/victoresque/pytorch-template) made by victoresque. I implemented a dataset and two dataloaders to prepare competition data. And created a PyTorch UNET model using [segmentation_models library](https://github.com/qubvel/segmentation_models).
+
 # PyTorch Template Project
 PyTorch deep learning project made easy.
 

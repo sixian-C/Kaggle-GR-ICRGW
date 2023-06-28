@@ -42,7 +42,7 @@ def main(config):
 
     # get function handles of loss and metrics
     criterion = smp.losses.DiceLoss(mode="binary", smooth=1.0) #getattr(module_loss, config['loss'])
-    metrics = [dice]# [getattr(module_metric, met) for met in config['metrics']]
+    metrics = [getattr(module_metric, met) for met in config['metrics']]
 
     # build optimizer, learning rate scheduler. delete every lines containing lr_scheduler for disabling scheduler
     trainable_params = filter(lambda p: p.requires_grad, model.parameters())

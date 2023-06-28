@@ -18,7 +18,8 @@ class Contrails_UNET(BaseModel):
         super().__init__()
         
         self.model = smp.Unet(
-            encoder_name="timm-resnest26d", 
+            # encoder_name="timm-efficientnet-b1", 
+            encoder_name = "timm-resnest26d",
             encoder_weights="imagenet", 
             decoder_use_batchnorm=True,
             classes=1, 
